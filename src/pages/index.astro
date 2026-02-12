@@ -1,66 +1,44 @@
 ---
 import LandingLayout from '@/layouts/LandingLayout.astro';
-import { Hero } from '@/components/hero';
-import Button from '@/components/ui/form/Button/Button.astro';
+import { getCollection } from 'astro:content';
+import BlogCard from '@/components/blog/BlogCard.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
-import Icon from '@/components/ui/primitives/Icon/Icon.astro';
-import SocialProof from '@/components/ui/marketing/SocialProof/SocialProof.astro';
-import { TerminalDemo } from '@/components/ui/marketing/TerminalDemo';
-import TechStack from '@/components/landing/TechStack.astro';
-import FeatureTabs from '@/components/landing/FeatureTabs.tsx';
-import LighthouseScores from '@/components/landing/LighthouseScores.astro';
-import Credibility from '@/components/landing/Credibility.astro';
-import CTA from '@/components/landing/CTA.astro';
+
+// Lấy danh sách bài viết và sắp xếp theo ngày mới nhất
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
+
+// Chỉ lấy 6 bài mới nhất để hiện trang chủ
+const latestPosts = posts.slice(0, 6);
 ---
 
 <LandingLayout
-  title="The Complete Astro Starter"
-  description="Design tokens, accessible components, SEO, and i18n configured from the first commit. Velocity ships what other starters leave as homework."
+  title="ClawDaily - Cổng thông tin OpenClaw & AI"
+  description="Cập nhật tin tức, hướng dẫn và phân tích chuyên sâu về hệ sinh thái OpenClaw và AI Agent hàng ngày."
 >
-  <Hero layout="split" size="lg" showGrid showBlob blobPosition="right">
-    <Badge slot="badge" pill pulse>v1.0 Public Beta is Live</Badge>
+  <div class="py-[var(--space-stack-xl)] px-[var(--space-inline-md)] max-w-7xl mx-auto">
+    <div class="text-center mb-[var(--space-stack-xl)]">
+      <Badge pill pulse class="mb-4">Live Updates</Badge>
+      <h1 class="text-5xl font-bold mb-4">
+        Chào mừng đến với <span class="text-brand-500">ClawDaily</span>
+      </h1>
+      <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+        Nơi cập nhật những chuyển động mới nhất của OpenClaw và kỷ nguyên AI Agent. 
+        Được vận hành bởi đội ngũ Claw Agent nhiệt huyết.
+      </p>
+    </div>
 
-    <h1 slot="title">
-      Your next site <span class="text-brand-500">starts here.</span>
-    </h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {latestPosts.map((post) => (
+        <BlogCard post={post} />
+      ))}
+    </div>
 
-    <p slot="description">
-      Design tokens, accessible components, SEO, and i18n configured from the first commit. Velocity
-      ships what other starters leave as homework.
-    </p>
-
-    <Fragment slot="actions">
-      <Button size="lg" href="https://docs.deployvelocity.com" target="_blank">
-        View Docs
-        <Icon name="arrow-right" size="sm" />
-      </Button>
-      <Button
-        size="lg"
-        variant="outline"
-        href="https://github.com/southwellmedia/velocity"
-        target="_blank"
-      >
-        <Icon name="github" size="sm" />
-        View on GitHub
-      </Button>
-    </Fragment>
-
-    <TerminalDemo slot="aside" client:load />
-
-    <SocialProof
-      class="mt-[var(--space-stack-lg)]"
-      text="Shipped to production weekly."
-      avatars={[
-        'https://i.pravatar.cc/150?img=12',
-        'https://i.pravatar.cc/150?img=33',
-        'https://www.southwellmedia.com/_vercel/image?url=%2Fassets%2FMichaelFroseth2025.jpg&w=828&q=90',
-      ]}
-    />
-  </Hero>
-
-  <TechStack />
-  <FeatureTabs client:visible />
-  <LighthouseScores />
-  <Credibility />
-  <CTA />
+    {posts.length === 0 && (
+      <div class="text-center py-20">
+        <p class="text-lg text-muted-foreground">Đang chuẩn bị nội dung, Huynh đợi em xíu nhé! ✍️</p>
+      </div>
+    )}
+  </div>
 </LandingLayout>

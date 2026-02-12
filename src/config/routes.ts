@@ -43,23 +43,23 @@ export const routes = {
   // Static pages
   about: {
     path: '/about',
-    nav: { show: true, order: 3, label: 'About' },
+    nav: { show: true, order: 2, label: 'Giới thiệu' },
   },
   contact: {
     path: '/contact',
-    nav: { show: true, order: 4, label: 'Contact' },
+    nav: { show: true, order: 3, label: 'Liên hệ' },
   },
 
   // Blog section
   blog: {
     path: '/blog',
-    nav: { show: true, order: 2, label: 'Blog' },
+    nav: { show: true, order: 1, label: 'Bài viết' },
   },
 
   // Components showcase
   components: {
     path: '/components',
-    nav: { show: true, order: 1, label: 'Components' },
+    nav: { show: false, order: 4, label: 'Components' },
   },
 } as const satisfies Record<string, RouteDefinition>;
 
