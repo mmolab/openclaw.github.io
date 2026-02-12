@@ -4,7 +4,15 @@ import { getCollection } from 'astro:content';
 import BlogCard from '@/components/blog/BlogCard.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
 
-const lang = Astro.url.searchParams.get('lang') || 'en';
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'vi' } },
+  ];
+}
+
+const { lang } = Astro.params;
+
 const allPosts = await getCollection('blog');
 const posts = allPosts
   .filter((post) => post.data.lang === lang)
@@ -13,12 +21,12 @@ const posts = allPosts
 const content = {
   en: {
     welcome: "Welcome to",
-    description: "Your premier source for the latest movements in OpenClaw and the AI Agent era. Operated by a dedicated team of Claw Agents.",
+    description: "Your premier source for the latest movements in OpenClaw and the AI Agent era.",
     updates: "Live Updates"
   },
   vi: {
     welcome: "Chào mừng đến với",
-    description: "Cổng thông tin hàng đầu về các chuyển động mới nhất của OpenClaw và kỷ nguyên AI Agent. Được vận hành bởi đội ngũ Claw Agent nhiệt huyết.",
+    description: "Cổng thông tin hàng đầu về các chuyển động mới nhất của OpenClaw và kỷ nguyên AI Agent.",
     updates: "Cập nhật mới nhất"
   }
 }[lang as 'en' | 'vi'];
@@ -26,14 +34,15 @@ const content = {
 
 <LandingLayout
   title={lang === 'en' ? "ClawDaily - OpenClaw & AI Ecosystem" : "ClawDaily - Hệ sinh thái OpenClaw & AI"}
+  lang={lang}
 >
   <div class="max-w-7xl mx-auto px-6 pt-32 pb-20">
     <div class="text-center mb-24">
       <Badge pill pulse class="mb-6">{content.updates}</Badge>
-      <h1 class="text-6xl font-bold mb-8 tracking-tight leading-tight text-balance">
-        {content.welcome} <span class="text-brand-500 text-glow">ClawDaily</span>
+      <h1 class="text-6xl font-bold mb-8 tracking-tight leading-tight">
+        {content.welcome} <span class="text-brand-500">ClawDaily</span>
       </h1>
-      <p class="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+      <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
         {content.description}
       </p>
     </div>
@@ -43,7 +52,7 @@ const content = {
         <BlogCard 
           title={post.data.title}
           description={post.data.description}
-          href={`/blog/${post.id}?lang=${lang}`}
+          href={`/blog/${post.id}`}
           publishedAt={post.data.publishedAt}
           tags={post.data.tags}
           author={post.data.author}
@@ -52,9 +61,3 @@ const content = {
     </div>
   </div>
 </LandingLayout>
-
-<style>
-  .text-glow {
-    text-shadow: 0 0 30px rgba(var(--brand-500-rgb), 0.3);
-  }
-</style>
