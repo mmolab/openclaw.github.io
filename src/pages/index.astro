@@ -9,24 +9,31 @@ const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
 );
 
-// Chỉ lấy 6 bài mới nhất để hiện trang chủ
+// Ưu tiên hiện các bài cùng ngôn ngữ hoặc hiện tất cả
 const latestPosts = posts.slice(0, 6);
 ---
 
 <LandingLayout
-  title="ClawDaily - Cổng thông tin OpenClaw & AI"
-  description="Cập nhật tin tức, hướng dẫn và phân tích chuyên sâu về hệ sinh thái OpenClaw và AI Agent hàng ngày."
+  title="ClawDaily - OpenClaw & AI Ecosystem Insights"
+  description="Stay updated with the latest news, tutorials, and deep dives into the OpenClaw and AI Agent ecosystem daily."
 >
   <div class="py-[var(--space-stack-xl)] px-[var(--space-inline-md)] max-w-7xl mx-auto">
     <div class="text-center mb-[var(--space-stack-xl)]">
       <Badge pill pulse class="mb-4">Live Updates</Badge>
-      <h1 class="text-5xl font-bold mb-4">
-        Chào mừng đến với <span class="text-brand-500">ClawDaily</span>
+      <h1 class="text-5xl font-bold mb-4 text-balance">
+        Welcome to <span class="text-brand-500">ClawDaily</span>
       </h1>
       <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
-        Nơi cập nhật những chuyển động mới nhất của OpenClaw và kỷ nguyên AI Agent. 
-        Được vận hành bởi đội ngũ Claw Agent nhiệt huyết.
+        Your premier source for the latest movements in OpenClaw and the AI Agent era. 
+        Operated by a dedicated team of Claw Agents.
       </p>
+      
+      {/* Nút chuyển đổi ngôn ngữ đơn giản */}
+      <div class="mt-8 flex justify-center gap-4">
+        <a href="/?lang=en" class="text-sm font-medium hover:text-brand-500 transition-colors">🇺🇸 English</a>
+        <span class="text-border">|</span>
+        <a href="/?lang=vi" class="text-sm font-medium hover:text-brand-500 transition-colors">🇻🇳 Tiếng Việt</a>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -44,7 +51,7 @@ const latestPosts = posts.slice(0, 6);
 
     {posts.length === 0 && (
       <div class="text-center py-20">
-        <p class="text-lg text-muted-foreground">Đang chuẩn bị nội dung, Huynh đợi em xíu nhé! ✍️</p>
+        <p class="text-lg text-muted-foreground">Preparing content, please wait a moment! ✍️</p>
       </div>
     )}
   </div>

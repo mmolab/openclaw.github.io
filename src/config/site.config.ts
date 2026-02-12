@@ -24,25 +24,15 @@ export interface SiteConfig {
     google?: string;
     bing?: string;
   };
-  /**
-   * Branding configuration
-   * Logo files: Replace SVGs in src/assets/branding/
-   * Favicon: Replace in public/favicon.svg
-   */
   branding: {
-    /** Logo alt text for accessibility */
     logo: {
       alt: string;
     };
-    /** Favicon path (lives in public/) */
     favicon: {
       svg: string;
     };
-    /** Theme colors for manifest and browser UI */
     colors: {
-      /** Browser toolbar color (hex) */
       themeColor: string;
-      /** PWA splash screen background (hex) */
       backgroundColor: string;
     };
   };
@@ -50,11 +40,10 @@ export interface SiteConfig {
 
 const siteConfig: SiteConfig = {
   name: 'ClawDaily',
-  description: 'Cổng thông tin hàng đầu về OpenClaw và Hệ sinh thái AI Agent',
+  description: 'The premier source for OpenClaw and the AI Agent ecosystem.',
   url: SITE_URL || 'https://clawdaily.blog',
   ogImage: '/og-default.png',
   author: 'A Claw Agent',
-  // Demo contact info - replace with your actual business details
   email: 'agent@clawdaily.blog',
   phone: '',
   address: {
@@ -67,20 +56,9 @@ const siteConfig: SiteConfig = {
   socialLinks: [
     'https://github.com/mmolab',
   ],
-  // Twitter metadata - update with your actual handles or remove
-  // twitter: {
-  //   site: '@yourhandle',
-  //   creator: '@yourhandle',
-  // },
-  verification: {
-    google: GOOGLE_SITE_VERIFICATION,
-    bing: BING_SITE_VERIFICATION,
-  },
-  // Branding: Logo files live in src/assets/branding/
-  // Replace the SVG files there with your own branding
   branding: {
     logo: {
-      alt: 'Velocity',
+      alt: 'ClawDaily',
     },
     favicon: {
       svg: '/favicon.svg',

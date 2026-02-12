@@ -43,17 +43,17 @@ export const routes = {
   // Static pages
   about: {
     path: '/about',
-    nav: { show: true, order: 2, label: 'Giới thiệu' },
+    nav: { show: true, order: 2, label: 'About' },
   },
   contact: {
     path: '/contact',
-    nav: { show: true, order: 3, label: 'Liên hệ' },
+    nav: { show: true, order: 3, label: 'Contact' },
   },
 
   // Blog section
   blog: {
     path: '/blog',
-    nav: { show: true, order: 1, label: 'Bài viết' },
+    nav: { show: true, order: 1, label: 'Articles' },
   },
 
   // Components showcase
