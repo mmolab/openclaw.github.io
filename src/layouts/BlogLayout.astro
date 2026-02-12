@@ -6,7 +6,6 @@ import Footer from '@/components/layout/Footer.astro';
 import Breadcrumbs from '@/components/seo/Breadcrumbs.astro';
 import ArticleHero from '@/components/blog/ArticleHero.astro';
 import ShareButtons from '@/components/blog/ShareButtons.astro';
-import RelatedPosts from '@/components/blog/RelatedPosts.astro';
 
 interface Props {
   title: string;
@@ -14,8 +13,7 @@ interface Props {
   publishedAt: Date;
   updatedAt?: Date;
   author?: string;
-  image?: ImageMetadata;
-  imageAlt?: string;
+  headerImage?: string;
   tags?: string[];
   slug?: string;
 }
@@ -25,57 +23,54 @@ const {
   description,
   publishedAt,
   updatedAt,
-  author = 'Team',
-  image,
-  imageAlt,
+  author = 'ClawDaily Writer',
+  headerImage,
   tags = [],
   slug = '',
 } = Astro.props;
 
-const ogImage = image?.src || `/og${Astro.url.pathname}.png`;
+// Lấy ngôn ngữ từ slug bài viết (ví dụ: vi/chao-mung...)
+const lang = slug.split('/')[0] === 'vi' ? 'vi' : 'en';
 
 const breadcrumbs = [
-  { label: 'Home', href: '/' },
-  { label: 'Blog', href: '/blog' },
+  { label: lang === 'en' ? 'Home' : 'Trang chủ', href: `/${lang}/` },
+  { label: lang === 'en' ? 'Articles' : 'Bài viết', href: `/${lang}/blog/` },
   { label: title },
 ];
 
-// Get full URL for sharing
+const nav = [
+  { label: lang === 'en' ? 'Articles' : 'Bài viết', href: `/${lang}/blog` },
+  { label: lang === 'en' ? 'About' : 'Giới thiệu', href: `/${lang}/about` },
+  { label: lang === 'en' ? 'Contact' : 'Liên hệ', href: `/${lang}/contact` },
+];
+
 const fullUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const targetLang = lang === 'en' ? 'vi' : 'en';
+// Khi ở trang chi tiết, chuyển switcher sẽ về trang chủ của ngôn ngữ kia để đảm bảo bài viết có bản dịch
+const switchHref = `/${targetLang}/`;
 ---
 
 <BaseLayout
   title={title}
   description={description}
-  image={ogImage}
-  imageAlt={imageAlt || title}
-  article={{
-    publishedTime: publishedAt,
-    modifiedTime: updatedAt,
-    authors: [author],
-    tags,
-  }}
+  image={headerImage}
 >
   <Header
     slot="header"
     position="fixed"
-    size="lg"
-    showActiveState
-    showCta
-    cta={{ label: 'View Docs', href: 'https://docs.deployvelocity.com' }}
-    extraNav={[{ label: 'Features', href: '#features' }]}
+    size="md"
+    nav={nav}
+    showCta={false}
     actions={[
       {
-        icon: 'github',
-        href: 'https://github.com/southwellmedia/velocity',
-        label: 'View on GitHub',
-        iconOnly: true,
-        target: '_blank',
+        icon: 'globe',
+        href: switchHref,
+        label: lang === 'en' ? 'Tiếng Việt 🇻🇳' : 'English 🇺🇸',
+        iconOnly: false,
       },
     ]}
   />
 
-  <!-- Article Hero -->
   <ArticleHero
     title={title}
     description={description}
@@ -83,59 +78,25 @@ const fullUrl = new URL(Astro.url.pathname, Astro.site).toString();
     updatedAt={updatedAt}
     author={author}
     tags={tags}
-    image={image}
-    imageAlt={imageAlt}
   />
 
-  <article class={`py-12 ${image ? 'pt-24' : ''}`}>
+  <article class="py-12">
     <div class="mx-auto max-w-4xl px-6">
-      <!-- Breadcrumbs -->
       <Breadcrumbs items={breadcrumbs} class="mb-8" />
-
-      <!-- Article Content -->
-      <div
-        class="prose prose-lg prose-headings:font-display prose-headings:font-bold prose-a:text-brand-600 hover:prose-a:text-brand-500 prose-code:text-brand-600 prose-code:bg-brand-50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-background-secondary prose-pre:border prose-pre:border-border dark:prose-invert dark:prose-a:text-brand-400 dark:hover:prose-a:text-brand-300 dark:prose-code:text-brand-400 dark:prose-code:bg-brand-900/30 max-w-none"
-      >
+      <div class="prose prose-lg prose-headings:font-display prose-headings:font-bold prose-a:text-brand-600 hover:prose-a:text-brand-500 dark:prose-invert max-w-none">
         <slot />
       </div>
 
-      <!-- Article Footer -->
       <footer class="border-border mt-12 border-t pt-8">
         <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <!-- Back link -->
-          <a
-            href="/blog"
-            class="text-brand-600 hover:text-brand-500 dark:text-brand-400 dark:hover:text-brand-300 inline-flex items-center gap-2 text-sm font-medium transition-colors"
-          >
-            <svg
-              class="h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              ></path>
-            </svg>
-            Back to Blog
+          <a href={`/${lang}/blog`} class="text-brand-600 hover:text-brand-500 dark:text-brand-400 inline-flex items-center gap-2 text-sm font-medium transition-colors">
+            ← {lang === 'en' ? 'Back to Articles' : 'Quay lại bài viết'}
           </a>
-
-          <!-- Share buttons -->
           <ShareButtons title={title} url={fullUrl} />
         </div>
       </footer>
     </div>
   </article>
 
-  <!-- Related Posts -->
-  {
-    tags.length > 0 && (
-      <div class="mx-auto max-w-6xl px-6 pb-16">
-        <RelatedPosts currentSlug={slug} tags={tags} locale="en" maxPosts={3} />
-      </div>
-    )
-  }
-
-  <Footer slot="footer" layout="simple" background="secondary" showCopyright={false} />
+  <Footer slot="footer" layout="simple" background="secondary" showCopyright={true} />
 </BaseLayout>

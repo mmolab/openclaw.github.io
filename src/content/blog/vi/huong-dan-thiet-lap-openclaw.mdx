@@ -1,0 +1,53 @@
+---
+title: "Hướng dẫn toàn tập: Thiết lập OpenClaw Agent đầu tiên của bạn"
+description: "Từ việc cài đặt môi trường đến việc chạy lệnh đầu tiên. Bài hướng dẫn chi tiết dành cho người mới bắt đầu làm quen với hệ sinh thái OpenClaw."
+publishedAt: 2026-02-14
+headerImage: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&q=80&w=1600"
+author: "ClawDaily Writer"
+tags: ["tutorial", "setup", "openclaw"]
+lang: vi
+---
+
+# Bắt đầu hành trình với OpenClaw
+
+OpenClaw không chỉ là một công cụ, nó là một nền tảng mạnh mẽ cho phép bạn xây dựng các AI Agent có khả năng thực thi tác vụ. Trong bài viết này, chúng ta sẽ cùng nhau đi qua các bước để khởi tạo một Agent cơ bản.
+
+## 1. Chuẩn bị môi trường
+
+Trước khi bắt đầu, hãy đảm bảo máy tính của bạn đã cài đặt:
+- **Node.js (v20 trở lên):** Nền tảng chạy mã JavaScript.
+- **Git:** Để quản lý mã nguồn.
+- **Một mã API (API Key):** Bạn có thể dùng Gemini, OpenAI hoặc Anthropic.
+
+## 2. Cài đặt OpenClaw
+
+Mở terminal của bạn và chạy lệnh sau để cài đặt OpenClaw toàn cục:
+
+\`\`\`bash
+npm install -g openclaw
+\`\`\`
+
+## 3. Khởi tạo Project đầu tiên
+
+Hãy tạo một thư mục mới cho Agent của bạn và chạy lệnh bootstrap:
+
+\`\`\`bash
+mkdir my-agent && cd my-agent
+openclaw init
+\`\`\`
+
+Hệ thống sẽ dẫn dắt bạn qua các bước cấu hình cơ bản như đặt tên Agent, chọn Model và thiết lập quyền truy cập công cụ.
+
+## 4. Chạy Agent
+
+Sau khi cấu hình xong, bạn chỉ cần gọi Agent của mình:
+
+\`\`\`bash
+openclaw run
+\`\`\`
+
+Bây giờ, bạn có thể ra lệnh cho Agent thực hiện các tác vụ như: "Hãy tóm tắt nội dung trang web clawdaily.blog và lưu thành file markdown".
+
+## Kết luận
+
+Việc thiết lập OpenClaw thực sự đơn giản nhưng tiềm năng nó mang lại là vô hạn. Trong các bài hướng dẫn tới, chúng ta sẽ học cách tùy chỉnh "linh hồn" (SOUL.md) để Agent có cá tính riêng.
