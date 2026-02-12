@@ -1,0 +1,103 @@
+---
+import LandingLayout from '@/layouts/LandingLayout.astro';
+import { getCollection } from 'astro:content';
+import BlogCard from '@/components/blog/BlogCard.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import { Image } from 'astro:assets';
+
+export async function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'vi' } }];
+}
+
+const { lang } = Astro.params;
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .filter((post) => post.data.lang === lang)
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+const featuredPost = posts[0];
+const remainingPosts = posts.slice(1, 7);
+
+const content = {
+  en: {
+    welcome: "Welcome to",
+    description: "Insights into the OpenClaw ecosystem and the future of AI automation.",
+    updates: "Featured Story",
+    latest: "Latest Intelligence",
+    readMore: "Read Article"
+  },
+  vi: {
+    welcome: "Chào mừng đến với",
+    description: "Khám phá hệ sinh thái OpenClaw và tương lai của tự động hóa AI.",
+    updates: "Tiêu điểm",
+    latest: "Tin tức mới nhất",
+    readMore: "Đọc bài viết"
+  }
+}[lang];
+---
+
+<LandingLayout title="ClawDaily - AI Agent Insights" lang={lang}>
+  <div class="max-w-7xl mx-auto px-6 pt-32 pb-20">
+    {/* Hero Section */}
+    <div class="text-center mb-20">
+      <Badge pill pulse class="mb-6">Global Intelligence</Badge>
+      <h1 class="text-6xl font-bold mb-6 tracking-tight tracking-tighter">
+        {content.welcome} <span class="text-brand-500">ClawDaily</span>
+      </h1>
+      <p class="text-xl text-muted-foreground max-w-2xl mx-auto italic">
+        "{content.description}"
+      </p>
+    </div>
+
+    {/* Featured Post */}
+    {featuredPost && (
+      <div class="mb-20">
+        <a href={`/blog/${featuredPost.id}`} class="group relative block overflow-hidden rounded-3xl border border-border bg-secondary/30 transition-all hover:border-brand-500/50">
+          <div class="grid lg:grid-cols-2 gap-0 items-center">
+            <div class="aspect-video lg:aspect-square overflow-hidden">
+              <img 
+                src={featuredPost.data.headerImage} 
+                alt={featuredPost.data.title}
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div class="p-8 lg:p-12">
+              <Badge class="mb-4">{content.updates}</Badge>
+              <h2 class="text-3xl lg:text-4xl font-bold mb-4 group-hover:text-brand-500 transition-colors">
+                {featuredPost.data.title}
+              </h2>
+              <p class="text-lg text-muted-foreground mb-8 line-clamp-3">
+                {featuredPost.data.description}
+              </p>
+              <div class="flex items-center gap-4 text-sm font-medium">
+                <span class="text-brand-500">{featuredPost.data.author}</span>
+                <span class="text-border">|</span>
+                <span class="text-muted-foreground">{featuredPost.data.publishedAt.toLocaleDateString()}</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    )}
+
+    {/* Latest Posts Grid */}
+    <div class="mb-12 flex items-center justify-between">
+      <h2 class="text-2xl font-bold tracking-tight">{content.latest}</h2>
+      <div class="h-px flex-1 bg-border mx-6 hidden md:block"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {remainingPosts.map((post) => (
+        <BlogCard 
+          title={post.data.title}
+          description={post.data.description}
+          href={`/blog/${post.id}`}
+          publishedAt={post.data.publishedAt}
+          tags={post.data.tags}
+          author={post.data.author}
+          image={post.data.headerImage}
+        />
+      ))}
+    </div>
+  </div>
+</LandingLayout>
