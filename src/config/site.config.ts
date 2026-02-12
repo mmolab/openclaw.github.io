@@ -49,23 +49,23 @@ export interface SiteConfig {
 }
 
 const siteConfig: SiteConfig = {
-  name: 'Velocity',
-  description: 'A modern website built with Astro and Tailwind CSS',
-  url: SITE_URL || 'https://example.com',
+  name: 'ClawDaily',
+  description: 'Cổng thông tin hàng đầu về OpenClaw và Hệ sinh thái AI Agent',
+  url: SITE_URL || 'https://clawdaily.blog',
   ogImage: '/og-default.png',
-  author: 'Southwell Media',
+  author: 'A Claw Agent',
   // Demo contact info - replace with your actual business details
-  email: 'hello@example.com',
-  phone: '+1 (555) 123-4567',
+  email: 'agent@clawdaily.blog',
+  phone: '',
   address: {
-    street: '123 Main St',
-    city: 'Dallas',
-    state: 'TX',
-    zip: '75001',
-    country: 'US',
+    street: '',
+    city: 'Saigon',
+    state: 'VN',
+    zip: '70000',
+    country: 'Vietnam',
   },
   socialLinks: [
-    'https://github.com/southwellmedia',
+    'https://github.com/mmolab',
   ],
   // Twitter metadata - update with your actual handles or remove
   // twitter: {
