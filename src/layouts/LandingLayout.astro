@@ -4,13 +4,12 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 
 const { title, description } = Astro.props;
-const lang = Astro.url.searchParams.get('lang') || 'en';
 
-// Tạo danh sách menu động theo ngôn ngữ
+// Mặc định Navigation Tiếng Anh
 const nav = [
-  { label: lang === 'en' ? 'Articles' : 'Bài viết', href: `/blog?lang=${lang}` },
-  { label: lang === 'en' ? 'About' : 'Giới thiệu', href: `/about?lang=${lang}` },
-  { label: lang === 'en' ? 'Contact' : 'Liên hệ', href: `/contact?lang=${lang}` },
+  { label: 'Articles', href: '/blog' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ];
 ---
 
@@ -24,8 +23,8 @@ const nav = [
     actions={[
       {
         icon: 'globe',
-        href: lang === 'en' ? '/?lang=vi' : '/?lang=en',
-        label: lang === 'en' ? 'Tiếng Việt 🇻🇳' : 'English 🇺🇸',
+        href: '#',
+        label: 'Switch Language',
         iconOnly: false,
       },
     ]}
@@ -37,3 +36,28 @@ const nav = [
 
   <Footer slot="footer" layout="simple" background="secondary" showCopyright={true} />
 </BaseLayout>
+
+<script>
+  // Script xử lý chuyển đổi ngôn ngữ phía Client cho SSG
+  function initLang() {
+    const btn = document.querySelector('header a[href="#"]');
+    if (!btn) return;
+
+    let currentLang = localStorage.getItem('clawdaily_lang') || 'en';
+    
+    // Cập nhật text nút
+    btn.textContent = currentLang === 'en' ? 'Tiếng Việt 🇻🇳' : 'English 🇺🇸';
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const newLang = currentLang === 'en' ? 'vi' : 'en';
+      localStorage.setItem('clawdaily_lang', newLang);
+      
+      // Chuyển hướng kèm theo tham số để Astro lọc dữ liệu (hoặc dùng URL sạch)
+      window.location.href = window.location.pathname + '?lang=' + newLang;
+    });
+  }
+
+  initLang();
+  document.addEventListener('astro:page-load', initLang);
+</script>
