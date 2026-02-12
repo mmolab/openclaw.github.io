@@ -3,57 +3,35 @@ import BaseLayout from './BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 
-interface Props {
-  title?: string;
-  description?: string;
-  image?: string;
-  imageAlt?: string;
-  noindex?: boolean;
-  nofollow?: boolean;
-  includeOrgSchema?: boolean;
-}
+const { title, description } = Astro.props;
+const lang = Astro.url.searchParams.get('lang') || 'en';
 
-const {
-  title,
-  description,
-  image,
-  imageAlt,
-  noindex = false,
-  nofollow = false,
-  includeOrgSchema = false,
-} = Astro.props;
-
-// Lấy ngôn ngữ hiện tại từ URL query
-const currentPath = Astro.url.pathname;
-const searchParams = Astro.url.searchParams;
-const lang = searchParams.get('lang') || 'en';
+// Tạo danh sách menu động theo ngôn ngữ
+const nav = [
+  { label: lang === 'en' ? 'Articles' : 'Bài viết', href: `/blog?lang=${lang}` },
+  { label: lang === 'en' ? 'About' : 'Giới thiệu', href: `/about?lang=${lang}` },
+  { label: lang === 'en' ? 'Contact' : 'Liên hệ', href: `/contact?lang=${lang}` },
+];
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  image={image}
-  imageAlt={imageAlt}
-  noindex={noindex}
-  nofollow={nofollow}
-  includeOrgSchema={includeOrgSchema}
->
+<BaseLayout title={title} description={description}>
   <Header
     slot="header"
     position="fixed"
     size="md"
+    nav={nav}
     showCta={false}
     actions={[
       {
         icon: 'globe',
-        href: lang === 'en' ? '?lang=vi' : '?lang=en',
+        href: lang === 'en' ? '/?lang=vi' : '/?lang=en',
         label: lang === 'en' ? 'Tiếng Việt 🇻🇳' : 'English 🇺🇸',
         iconOnly: false,
       },
     ]}
   />
 
-  <main class="pt-24">
+  <main>
     <slot />
   </main>
 
