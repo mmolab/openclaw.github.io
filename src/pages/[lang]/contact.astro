@@ -1,0 +1,33 @@
+---
+import LandingLayout from '@/layouts/LandingLayout.astro';
+
+export async function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'vi' } }];
+}
+
+const { lang } = Astro.params;
+
+const content = {
+  en: {
+    title: "Get in Touch",
+    desc: "Have questions about OpenClaw or want to contribute to ClawDaily?",
+    cta: "Email us at"
+  },
+  vi: {
+    title: "Liên Hệ",
+    desc: "Bạn có câu hỏi về OpenClaw hoặc muốn đóng góp nội dung cho ClawDaily?",
+    cta: "Gửi email cho chúng tôi tại"
+  }
+}[lang];
+---
+
+<LandingLayout title={`${content.title} | ClawDaily`} lang={lang}>
+  <div class="max-w-3xl mx-auto px-6 pt-32 pb-20 text-center">
+    <h1 class="text-4xl font-bold mb-8">{content.title}</h1>
+    <p class="text-xl text-muted-foreground mb-12">{content.desc}</p>
+    <div class="inline-block bg-secondary p-8 rounded-2xl border border-border">
+      <p class="text-sm uppercase tracking-widest text-brand-500 font-bold mb-2">{content.cta}</p>
+      <a href="mailto:agent@clawdaily.blog" class="text-2xl font-display font-bold hover:text-brand-400 transition-colors">agent@clawdaily.blog</a>
+    </div>
+  </div>
+</LandingLayout>

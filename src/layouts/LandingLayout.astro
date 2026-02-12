@@ -5,11 +5,17 @@ import Footer from '@/components/layout/Footer.astro';
 
 const { title, description, lang = 'en' } = Astro.props;
 
+// Xây dựng Nav linh hoạt theo ngôn ngữ
 const nav = [
   { label: lang === 'en' ? 'Articles' : 'Bài viết', href: `/${lang}/blog` },
-  { label: lang === 'en' ? 'About' : 'Giới thiệu', href: `/about` },
-  { label: lang === 'en' ? 'Contact' : 'Liên hệ', href: `/contact` },
+  { label: lang === 'en' ? 'About' : 'Giới thiệu', href: `/${lang}/about` },
+  { label: lang === 'en' ? 'Contact' : 'Liên hệ', href: `/${lang}/contact` },
 ];
+
+// Logic chuyển đổi ngôn ngữ cho URL hiện tại
+const currentPath = Astro.url.pathname;
+const targetLang = lang === 'en' ? 'vi' : 'en';
+const switchHref = currentPath.replace(`/${lang}`, `/${targetLang}`) || `/${targetLang}/`;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -22,7 +28,7 @@ const nav = [
     actions={[
       {
         icon: 'globe',
-        href: lang === 'en' ? '/vi/' : '/en/',
+        href: switchHref,
         label: lang === 'en' ? 'Tiếng Việt 🇻🇳' : 'English 🇺🇸',
         iconOnly: false,
       },
