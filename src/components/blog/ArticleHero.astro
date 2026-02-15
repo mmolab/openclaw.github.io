@@ -11,6 +11,7 @@ interface Props {
   author?: string;
   tags?: string[];
   image?: ImageMetadata;
+  headerImage?: string;  // Thêm support cho URL string
   imageAlt?: string;
 }
 
@@ -22,6 +23,7 @@ const {
   author = 'Team',
   tags = [],
   image,
+  headerImage,
   imageAlt,
 } = Astro.props;
 
@@ -108,15 +110,24 @@ const readingTime = Math.max(1, Math.ceil(estimatedWords / wordsPerMinute));
     </div>
   </div>
 
-  {image && (
+  {(image || headerImage) && (
     <div class="relative mx-auto max-w-5xl px-6 -mb-16">
       <div class="overflow-hidden rounded-xl border border-border shadow-2xl">
-        <Image
-          src={image}
-          alt={imageAlt || title}
-          class="aspect-video w-full object-cover"
-          loading="eager"
-        />
+        {image ? (
+          <Image
+            src={image}
+            alt={imageAlt || title}
+            class="aspect-video w-full object-cover"
+            loading="eager"
+          />
+        ) : headerImage ? (
+          <img
+            src={headerImage}
+            alt={imageAlt || title}
+            class="aspect-video w-full object-cover"
+            loading="eager"
+          />
+        ) : null}
       </div>
     </div>
   )}
