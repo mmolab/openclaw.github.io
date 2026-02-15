@@ -52,7 +52,7 @@ export default defineConfig({
         ],
       },
       directives: [
-        "font-src 'self'",
+        "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://r2cdn.perplexity.ai",
         "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
         "img-src 'self' data: https://www.googletagmanager.com https://i.pravatar.cc https://www.southwellmedia.com https://images.unsplash.com",
       ],
