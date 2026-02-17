@@ -302,13 +302,13 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const API_BASE = 'https://lixi-harry.loca.lt/api';
+        const API_BASE = 'https://lixi-api.onrender.com/api';
         let socket;
         let gameState = {};
         let activityLogs = [];
         
         function initSocket() {
-            socket = io('https://lixi-harry.loca.lt');
+            socket = io('https://lixi-api.onrender.com');
             
             socket.on('connect', () => {
                 updateConnectionStatus(true);
