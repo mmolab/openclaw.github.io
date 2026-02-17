@@ -405,7 +405,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         // Configuration
-        const API_BASE = 'http://localhost:3001/api';
+        const API_BASE = 'https://lixi-harry.loca.lt/api';
         
         // State
         let socket;
@@ -431,7 +431,7 @@
         
         // Initialize Socket.IO connection
         function initSocket() {
-            socket = io('http://localhost:3001');
+            socket = io('https://lixi-harry.loca.lt');
             
             socket.on('connect', () => {
                 updateConnectionStatus(true);
