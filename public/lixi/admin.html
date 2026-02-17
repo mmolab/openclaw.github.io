@@ -268,9 +268,49 @@
         
         <div class="controls">
             <div class="control-group">
-                <h3>🎮 Game Controls</h3>
-                <button class="btn btn-danger" onclick="resetGame()">🔄 Reset Game</button>
+                <h3>⚙️ Cấu hình Game Mới</h3>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #fbbf24;">Tổng tiền (VNĐ):</label>
+                    <input type="number" id="totalMoneyInput" value="500000" style="width: 100%; padding: 8px; border-radius: 5px; border: none;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #fbbf24;">Số bao lì xì:</label>
+                    <input type="number" id="envelopeCountInput" value="10" min="1" max="50" style="width: 100%; padding: 8px; border-radius: 5px; border: none;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #fbbf24;">Max người chơi:</label>
+                    <input type="number" id="maxPlayersInput" value="10" min="1" max="100" style="width: 100%; padding: 8px; border-radius: 5px; border: none;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #fbbf24;">
+                        <input type="radio" name="amountMode" value="random" checked onchange="toggleAmountMode()"> Random mệnh giá
+                    </label>
+                    <div id="randomMode" style="margin-left: 20px;">
+                        <label style="display: block; margin: 5px 0; font-size: 12px;">Từ:</label>
+                        <input type="number" id="randomMinInput" value="10000" style="width: 100%; padding: 6px; border-radius: 3px; border: none; margin-bottom: 5px;">
+                        <label style="display: block; margin: 5px 0; font-size: 12px;">Đến:</label>
+                        <input type="number" id="randomMaxInput" value="100000" style="width: 100%; padding: 6px; border-radius: 3px; border: none;">
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #fbbf24;">
+                        <input type="radio" name="amountMode" value="fixed" onchange="toggleAmountMode()"> Mệnh giá cố định
+                    </label>
+                    <div id="fixedMode" style="margin-left: 20px; display: none;">
+                        <textarea id="fixedAmountsInput" placeholder="Nhập các mệnh giá, cách nhau bởi dấu phẩy&#10;Ví dụ: 50000, 100000, 25000, 75000" style="width: 100%; height: 80px; padding: 8px; border-radius: 5px; border: none; resize: vertical; font-size: 12px;"></textarea>
+                        <div style="font-size: 11px; color: #94a3b8; margin-top: 5px;">Nếu có nhiều bao hơn mệnh giá, sẽ lặp lại từ đầu</div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-danger" onclick="createNewGame()">🎮 Tạo Game Mới</button>
+            </div>
+            
+            <div class="control-group">
+                <h3>🔧 Game Controls</h3>
                 <button class="btn" onclick="refreshStats()">📊 Refresh Stats</button>
+                <button class="btn btn-danger" onclick="resetToDefault()">🔄 Reset Mặc Định</button>
             </div>
             
             <div class="control-group">
@@ -396,8 +436,91 @@
             document.getElementById('shareLink').textContent = url || 'Đang tạo link...';
         }
         
-        async function resetGame() {
-            if (!confirm('Bạn có chắc muốn reset game? Tất cả dữ liệu sẽ bị xóa!')) {
+        function toggleAmountMode() {
+            const randomMode = document.querySelector('input[name="amountMode"]:checked').value === 'random';
+            document.getElementById('randomMode').style.display = randomMode ? 'block' : 'none';
+            document.getElementById('fixedMode').style.display = randomMode ? 'none' : 'block';
+        }
+        
+        async function createNewGame() {
+            if (!confirm('Tạo game mới với cấu hình này? Game hiện tại sẽ bị reset!')) {
+                return;
+            }
+            
+            const totalMoney = parseInt(document.getElementById('totalMoneyInput').value);
+            const envelopeCount = parseInt(document.getElementById('envelopeCountInput').value);
+            const maxPlayers = parseInt(document.getElementById('maxPlayersInput').value);
+            const useFixedAmounts = document.querySelector('input[name="amountMode"]:checked').value === 'fixed';
+            
+            let amounts = [];
+            let randomMin = 10000;
+            let randomMax = 100000;
+            
+            if (useFixedAmounts) {
+                const fixedAmountsText = document.getElementById('fixedAmountsInput').value;
+                amounts = fixedAmountsText.split(',').map(a => parseInt(a.trim())).filter(a => !isNaN(a) && a > 0);
+                
+                if (amounts.length === 0) {
+                    showMessage('error', 'Vui lòng nhập ít nhất một mệnh giá hợp lệ!');
+                    return;
+                }
+                
+                const totalFixed = amounts.reduce((sum, amount) => sum + amount, 0);
+                const requiredTotal = Math.ceil(envelopeCount / amounts.length) * totalFixed;
+                
+                if (requiredTotal > totalMoney) {
+                    showMessage('error', `Tổng mệnh giá cố định (${formatNumber(requiredTotal)}) vượt quá tổng tiền (${formatNumber(totalMoney)})!`);
+                    return;
+                }
+            } else {
+                randomMin = parseInt(document.getElementById('randomMinInput').value);
+                randomMax = parseInt(document.getElementById('randomMaxInput').value);
+                
+                if (randomMin >= randomMax) {
+                    showMessage('error', 'Mệnh giá tối thiểu phải nhỏ hơn tối đa!');
+                    return;
+                }
+                
+                if (randomMin * envelopeCount > totalMoney) {
+                    showMessage('error', 'Tổng mệnh giá tối thiểu vượt quá tổng tiền!');
+                    return;
+                }
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/reset`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        totalMoney,
+                        envelopeCount,
+                        maxPlayers,
+                        amounts,
+                        randomMin,
+                        randomMax,
+                        useFixedAmounts
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('success', 'Game mới đã được tạo thành công!');
+                    addLog(`Admin tạo game: ${envelopeCount} bao, ${formatNumber(totalMoney)} VNĐ, ${useFixedAmounts ? 'mệnh giá cố định' : 'random'}`);
+                    setTimeout(() => loadAdminStats(), 500);
+                } else {
+                    showMessage('error', 'Không thể tạo game mới!');
+                }
+            } catch (error) {
+                console.error('Create game error:', error);
+                showMessage('error', 'Lỗi kết nối khi tạo game!');
+            }
+        }
+        
+        async function resetToDefault() {
+            if (!confirm('Reset về cấu hình mặc định (10 bao, 500k, random 10k-100k)?')) {
                 return;
             }
             
@@ -412,9 +535,16 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    showMessage('success', 'Game đã được reset thành công!');
-                    addLog('Admin reset game');
+                    showMessage('success', 'Game đã được reset về mặc định!');
+                    addLog('Admin reset về mặc định');
                     setTimeout(() => loadAdminStats(), 500);
+                    
+                    // Reset form
+                    document.getElementById('totalMoneyInput').value = 500000;
+                    document.getElementById('envelopeCountInput').value = 10;
+                    document.getElementById('maxPlayersInput').value = 10;
+                    document.querySelector('input[name="amountMode"][value="random"]').checked = true;
+                    toggleAmountMode();
                 } else {
                     showMessage('error', 'Không thể reset game!');
                 }
