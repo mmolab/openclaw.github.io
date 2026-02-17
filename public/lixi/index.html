@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧧 Lì Xì Online - Tết Bính Ngọ 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* Hoa mai decoration */
+        .flower-decoration {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="%23fbbf24"><circle cx="50" cy="30" r="8"/><circle cx="70" cy="50" r="8"/><circle cx="50" cy="70" r="8"/><circle cx="30" cy="50" r="8"/><circle cx="50" cy="50" r="6" fill="%23f59e0b"/></g></svg>') no-repeat center;
+            background-size: contain;
+            opacity: 0.3;
+        }
+        
+        .flower-1 { top: 10%; right: 10%; animation: float 6s ease-in-out infinite; }
+        .flower-2 { top: 60%; left: 5%; animation: float 8s ease-in-out infinite reverse; }
+        .flower-3 { bottom: 15%; right: 15%; animation: float 7s ease-in-out infinite; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .year-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .stat-item:last-child {
+            margin-bottom: 0;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        
+        .lixi-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lixi-envelope {
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(45deg, #dc2626, #b91c1c);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 3px solid #fbbf24;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        
+        .lixi-envelope:hover {
+            transform: scale(1.05);
+        }
+        
+        .lixi-envelope.opened {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+        
+        .envelope-flap {
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-top: 60px solid #fbbf24;
+        }
+        
+        .envelope-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+        }
+        
+        .envelope-text {
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            margin-top: 10px;
+        }
+        
+        .amount-display {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #fbbf24;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            min-height: 60px;
+        }
+        
+        .result-text {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            min-height: 50px;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #dc2626;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(251,191,36,0.4);
+        }
+        
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251,191,36,0.6);
+        }
+        
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+            pointer-events: none;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #fbbf24;
+            animation: confetti-fall 3s linear infinite;
+            opacity: 0;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hoa mai decorations -->
+        <div class="flower-decoration flower-1"></div>
+        <div class="flower-decoration flower-2"></div>
+        <div class="flower-decoration flower-3"></div>
+        
+        <div class="header">
+            <div class="year-text">🐴 Tết Bính Ngọ 2026 🐴</div>
+            <div class="title">🧧 Lì Xì Online</div>
+            <div class="subtitle">Chúc Mừng Năm Mới - Vạn Sự Như Ý</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <span>Tổng tiền lì xì:</span>
+                <span id="totalMoney">500,000 VNĐ</span>
+            </div>
+            <div class="stat-item">
+                <span>Số bao còn lại:</span>
+                <span id="remainingEnvelopes">10</span>
+            </div>
+            <div class="stat-item">
+                <span>Tiền còn lại:</span>
+                <span id="remainingMoney">500,000 VNĐ</span>
+            </div>
+        </div>
+        
+        <div class="lixi-container">
+            <div class="lixi-envelope" id="lixiEnvelope">
+                <div class="envelope-flap"></div>
+                <div class="envelope-content">
+                    <div style="font-size: 40px;">🧧</div>
+                    <div class="envelope-text">Nhấn để mở</div>
+                </div>
+            </div>
+            
+            <div class="amount-display" id="amountDisplay"></div>
+            <div class="result-text" id="resultText"></div>
+            
+            <button class="reset-btn" id="resetBtn" onclick="resetGame()" style="display: none;">
+                🎊 Chơi lại từ đầu
+            </button>
+        </div>
+        
+        <div class="footer">
+            <div>💖 Chúc bạn năm mới an khang thịnh vượng 💖</div>
+            <div style="margin-top: 10px; font-size: 12px;">
+                Powered by ClawDaily.blog
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameData = {
+            totalMoney: 500000,
+            remainingMoney: 500000,
+            remainingEnvelopes: 10,
+            openedEnvelopes: 0
+        };
+        
+        // Load saved data
+        const savedData = localStorage.getItem('lixi-game-data');
+        if (savedData) {
+            gameData = JSON.parse(savedData);
+        }
+        
+        function saveGameData() {
+            localStorage.setItem('lixi-game-data', JSON.stringify(gameData));
+        }
+        
+        function updateDisplay() {
+            document.getElementById('totalMoney').textContent = formatMoney(gameData.totalMoney);
+            document.getElementById('remainingEnvelopes').textContent = gameData.remainingEnvelopes;
+            document.getElementById('remainingMoney').textContent = formatMoney(gameData.remainingMoney);
+            
+            const envelope = document.getElementById('lixiEnvelope');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            if (gameData.remainingEnvelopes <= 0) {
+                envelope.classList.add('disabled');
+                envelope.innerHTML = `
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-content">
+                        <div style="font-size: 30px;">🎊</div>
+                        <div class="envelope-text">Hết lì xì</div>
+                    </div>
+                `;
+                resetBtn.style.display = 'block';
+            }
+        }
+        
+        function formatMoney(amount) {
+            return amount.toLocaleString('vi-VN') + ' VNĐ';
+        }
+        
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = ['#fbbf24', '#f59e0b', '#dc2626', '#fff'][Math.floor(Math.random() * 4)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+        }
+        
+        function openEnvelope() {
+            if (gameData.remainingEnvelopes <= 0) return;
+            
+            const envelope = document.getElementById('lixiEnvelope');
+            const amountDisplay = document.getElementById('amountDisplay');
+            const resultText = document.getElementById('resultText');
+            
+            envelope.classList.add('opened');
+            
+            // Calculate random amount ensuring fair distribution
+            const minAmount = 10000;
+            const maxAmount = Math.min(100000, gameData.remainingMoney);
+            
+            let randomAmount;
+            if (gameData.remainingEnvelopes === 1) {
+                // Last envelope gets all remaining money
+                randomAmount = gameData.remainingMoney;
+            } else {
+                // Ensure there's enough money left for remaining envelopes
+                const minForRemaining = (gameData.remainingEnvelopes - 1) * minAmount;
+                const availableForThis = gameData.remainingMoney - minForRemaining;
+                randomAmount = Math.min(maxAmount, Math.max(minAmount, Math.floor(Math.random() * availableForThis) + minAmount));
+            }
+            
+            setTimeout(() => {
+                amountDisplay.textContent = formatMoney(randomAmount);
+                resultText.innerHTML = `
+                    <div style="color: #fbbf24; font-weight: bold;">🎉 Chúc mừng! 🎉</div>
+                    <div>Bạn nhận được ${formatMoney(randomAmount)}</div>
+                `;
+                
+                gameData.remainingMoney -= randomAmount;
+                gameData.remainingEnvelopes--;
+                gameData.openedEnvelopes++;
+                
+                createConfetti();
+                saveGameData();
+                updateDisplay();
+                
+                envelope.classList.remove('opened');
+            }, 500);
+        }
+        
+        function resetGame() {
+            gameData = {
+                totalMoney: 500000,
+                remainingMoney: 500000,
+                remainingEnvelopes: 10,
+                openedEnvelopes: 0
+            };
+            
+            document.getElementById('amountDisplay').textContent = '';
+            document.getElementById('resultText').textContent = '';
+            document.getElementById('resetBtn').style.display = 'none';
+            
+            const envelope = document.getElementById('lixiEnvelope');
+            envelope.classList.remove('disabled');
+            envelope.innerHTML = `
+                <div class="envelope-flap"></div>
+                <div class="envelope-content">
+                    <div style="font-size: 40px;">🧧</div>
+                    <div class="envelope-text">Nhấn để mở</div>
+                </div>
+            `;
+            
+            saveGameData();
+            updateDisplay();
+        }
+        
+        // Initialize
+        document.getElementById('lixiEnvelope').addEventListener('click', openEnvelope);
+        updateDisplay();
+        
+        // Add some sparkle effects
+        setInterval(() => {
+            if (Math.random() < 0.1) {
+                const sparkle = document.createElement('div');
+                sparkle.innerHTML = '✨';
+                sparkle.style.position = 'absolute';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.fontSize = '20px';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.animation = 'confetti-fall 2s linear';
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 2000);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
