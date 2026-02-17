@@ -79,6 +79,76 @@
             margin-bottom: 20px;
         }
         
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .player-setup {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #fbbf24;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+        }
+        
+        .join-btn {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #dc2626;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(251,191,36,0.4);
+            width: 100%;
+        }
+        
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251,191,36,0.6);
+        }
+        
         .stats {
             background: rgba(255,255,255,0.1);
             border-radius: 15px;
@@ -181,22 +251,31 @@
             min-height: 50px;
         }
         
-        .reset-btn {
-            background: linear-gradient(45deg, #fbbf24, #f59e0b);
-            color: #dc2626;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(251,191,36,0.4);
+        .recent-opens {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
         
-        .reset-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(251,191,36,0.6);
+        .recent-opens h3 {
+            color: #fbbf24;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .open-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+        }
+        
+        .open-item:last-child {
+            border-bottom: none;
         }
         
         .disabled {
@@ -231,6 +310,24 @@
                 opacity: 0;
             }
         }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -244,12 +341,30 @@
             <div class="year-text">🐴 Tết Bính Ngọ 2026 🐴</div>
             <div class="title">🧧 Lì Xì Online</div>
             <div class="subtitle">Chúc Mừng Năm Mới - Vạn Sự Như Ý</div>
+            <div class="status-indicator" id="connectionStatus">
+                <div class="status-dot"></div>
+                <span>Đang kết nối...</span>
+            </div>
+        </div>
+        
+        <!-- Player Setup (shown if not joined) -->
+        <div class="player-setup" id="playerSetup">
+            <div class="input-group">
+                <label for="playerName">Tên của bạn:</label>
+                <input type="text" id="playerName" placeholder="Nhập tên của bạn..." maxlength="20">
+            </div>
+            <button class="join-btn" onclick="joinGame()">🎊 Tham gia chơi lì xì</button>
+            <div id="joinMessage"></div>
         </div>
         
         <div class="stats">
             <div class="stat-item">
                 <span>Tổng tiền lì xì:</span>
                 <span id="totalMoney">500,000 VNĐ</span>
+            </div>
+            <div class="stat-item">
+                <span>Người chơi:</span>
+                <span id="playerCount">0/10</span>
             </div>
             <div class="stat-item">
                 <span>Số bao còn lại:</span>
@@ -272,10 +387,11 @@
             
             <div class="amount-display" id="amountDisplay"></div>
             <div class="result-text" id="resultText"></div>
-            
-            <button class="reset-btn" id="resetBtn" onclick="resetGame()" style="display: none;">
-                🎊 Chơi lại từ đầu
-            </button>
+        </div>
+        
+        <div class="recent-opens" id="recentOpens" style="display: none;">
+            <h3>🎉 Ai đã mở lì xì:</h3>
+            <div id="opensList"></div>
         </div>
         
         <div class="footer">
@@ -286,33 +402,247 @@
         </div>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        let gameData = {
+        // Configuration
+        const API_BASE = 'http://localhost:3001/api';
+        
+        // State
+        let socket;
+        let gameState = {
             totalMoney: 500000,
             remainingMoney: 500000,
             remainingEnvelopes: 10,
-            openedEnvelopes: 0
+            currentPlayers: 0,
+            maxPlayers: 10,
+            isActive: false,
+            openedBy: []
         };
+        let playerId = localStorage.getItem('lixi-player-id') || generatePlayerId();
+        let playerName = localStorage.getItem('lixi-player-name') || '';
+        let hasJoined = localStorage.getItem('lixi-has-joined') === 'true';
+        let hasOpened = false;
         
-        // Load saved data
-        const savedData = localStorage.getItem('lixi-game-data');
-        if (savedData) {
-            gameData = JSON.parse(savedData);
+        function generatePlayerId() {
+            const id = 'player_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('lixi-player-id', id);
+            return id;
         }
         
-        function saveGameData() {
-            localStorage.setItem('lixi-game-data', JSON.stringify(gameData));
+        // Initialize Socket.IO connection
+        function initSocket() {
+            socket = io('http://localhost:3001');
+            
+            socket.on('connect', () => {
+                updateConnectionStatus(true);
+                socket.emit('requestGameStatus');
+                
+                if (hasJoined && playerName) {
+                    document.getElementById('playerSetup').style.display = 'none';
+                }
+            });
+            
+            socket.on('disconnect', () => {
+                updateConnectionStatus(false);
+            });
+            
+            socket.on('gameStatus', (status) => {
+                gameState = { ...gameState, ...status };
+                updateDisplay();
+            });
+            
+            socket.on('playerJoined', (data) => {
+                gameState.currentPlayers = data.currentPlayers;
+                updateDisplay();
+                showMessage('success', `${data.playerName} đã tham gia!`);
+            });
+            
+            socket.on('envelopeOpened', (data) => {
+                gameState.remainingMoney = data.remainingMoney;
+                gameState.remainingEnvelopes = data.remainingEnvelopes;
+                gameState.isActive = !data.isGameFinished;
+                gameState.openedBy.push({
+                    playerName: data.playerName,
+                    amount: data.amount,
+                    openedAt: new Date().toISOString()
+                });
+                
+                updateDisplay();
+                
+                if (data.playerId === playerId) {
+                    // This player opened the envelope
+                    showEnvelopeResult(data.amount);
+                } else {
+                    // Someone else opened
+                    showMessage('success', `${data.playerName} mở được ${formatMoney(data.amount)}!`);
+                }
+                
+                createConfetti();
+            });
+            
+            socket.on('gameReset', (newGameState) => {
+                gameState = {
+                    totalMoney: newGameState.totalMoney,
+                    remainingMoney: newGameState.remainingMoney,
+                    remainingEnvelopes: newGameState.remainingEnvelopes,
+                    currentPlayers: 0,
+                    maxPlayers: newGameState.maxPlayers,
+                    isActive: newGameState.isActive,
+                    openedBy: []
+                };
+                
+                // Reset player state
+                hasOpened = false;
+                hasJoined = false;
+                localStorage.removeItem('lixi-has-joined');
+                localStorage.removeItem('lixi-player-name');
+                
+                document.getElementById('playerSetup').style.display = 'block';
+                document.getElementById('amountDisplay').textContent = '';
+                document.getElementById('resultText').textContent = '';
+                
+                updateDisplay();
+                showMessage('success', 'Game đã được reset! Bạn có thể chơi lại.');
+            });
+        }
+        
+        function updateConnectionStatus(connected) {
+            const statusEl = document.getElementById('connectionStatus');
+            if (connected) {
+                statusEl.innerHTML = '<div class="status-dot"></div><span>Đã kết nối</span>';
+            } else {
+                statusEl.innerHTML = '<div class="status-dot" style="background: #ef4444;"></div><span>Mất kết nối</span>';
+            }
+        }
+        
+        async function joinGame() {
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showMessage('error', 'Vui lòng nhập tên của bạn!');
+                return;
+            }
+            
+            if (name.length > 20) {
+                showMessage('error', 'Tên không được dài quá 20 ký tự!');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/game/join`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        playerId: playerId,
+                        playerName: name
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    playerName = name;
+                    hasJoined = true;
+                    localStorage.setItem('lixi-player-name', name);
+                    localStorage.setItem('lixi-has-joined', 'true');
+                    
+                    document.getElementById('playerSetup').style.display = 'none';
+                    showMessage('success', 'Tham gia thành công! Bạn có thể mở lì xì ngay.');
+                } else {
+                    showMessage('error', result.error || 'Không thể tham gia game!');
+                }
+            } catch (error) {
+                showMessage('error', 'Lỗi kết nối! Vui lòng thử lại.');
+                console.error('Join error:', error);
+            }
+        }
+        
+        async function openEnvelope() {
+            if (!hasJoined || hasOpened || gameState.remainingEnvelopes <= 0 || !gameState.isActive) {
+                return;
+            }
+            
+            // Check if this player already opened
+            if (gameState.openedBy.some(entry => entry.playerId === playerId)) {
+                showMessage('error', 'Bạn đã mở lì xì rồi!');
+                return;
+            }
+            
+            const envelope = document.getElementById('lixiEnvelope');
+            envelope.classList.add('opened');
+            
+            try {
+                const response = await fetch(`${API_BASE}/game/open`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        playerId: playerId,
+                        playerName: playerName
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    hasOpened = true;
+                    // Result will be handled by socket event
+                } else {
+                    showMessage('error', result.error || 'Không thể mở lì xì!');
+                }
+            } catch (error) {
+                showMessage('error', 'Lỗi kết nối! Vui lòng thử lại.');
+                console.error('Open error:', error);
+            }
+            
+            setTimeout(() => {
+                envelope.classList.remove('opened');
+            }, 500);
+        }
+        
+        function showEnvelopeResult(amount) {
+            const amountDisplay = document.getElementById('amountDisplay');
+            const resultText = document.getElementById('resultText');
+            
+            amountDisplay.textContent = formatMoney(amount);
+            resultText.innerHTML = `
+                <div style="color: #fbbf24; font-weight: bold;">🎉 Chúc mừng bạn! 🎉</div>
+                <div>Bạn nhận được ${formatMoney(amount)}</div>
+            `;
         }
         
         function updateDisplay() {
-            document.getElementById('totalMoney').textContent = formatMoney(gameData.totalMoney);
-            document.getElementById('remainingEnvelopes').textContent = gameData.remainingEnvelopes;
-            document.getElementById('remainingMoney').textContent = formatMoney(gameData.remainingMoney);
+            document.getElementById('totalMoney').textContent = formatMoney(gameState.totalMoney);
+            document.getElementById('playerCount').textContent = `${gameState.currentPlayers}/${gameState.maxPlayers}`;
+            document.getElementById('remainingEnvelopes').textContent = gameState.remainingEnvelopes;
+            document.getElementById('remainingMoney').textContent = formatMoney(gameState.remainingMoney);
             
             const envelope = document.getElementById('lixiEnvelope');
-            const resetBtn = document.getElementById('resetBtn');
             
-            if (gameData.remainingEnvelopes <= 0) {
+            // Update envelope state
+            if (!hasJoined) {
+                envelope.classList.add('disabled');
+                envelope.innerHTML = `
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-content">
+                        <div style="font-size: 30px;">👋</div>
+                        <div class="envelope-text">Tham gia trước</div>
+                    </div>
+                `;
+            } else if (hasOpened || gameState.openedBy.some(entry => entry.playerId === playerId)) {
+                envelope.classList.add('disabled');
+                envelope.innerHTML = `
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-content">
+                        <div style="font-size: 30px;">✅</div>
+                        <div class="envelope-text">Đã mở</div>
+                    </div>
+                `;
+            } else if (gameState.remainingEnvelopes <= 0) {
                 envelope.classList.add('disabled');
                 envelope.innerHTML = `
                     <div class="envelope-flap"></div>
@@ -321,12 +651,51 @@
                         <div class="envelope-text">Hết lì xì</div>
                     </div>
                 `;
-                resetBtn.style.display = 'block';
+            } else {
+                envelope.classList.remove('disabled');
+                envelope.innerHTML = `
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-content">
+                        <div style="font-size: 40px;">🧧</div>
+                        <div class="envelope-text">Nhấn để mở</div>
+                    </div>
+                `;
+            }
+            
+            // Update recent opens
+            updateRecentOpens();
+        }
+        
+        function updateRecentOpens() {
+            const recentOpens = document.getElementById('recentOpens');
+            const opensList = document.getElementById('opensList');
+            
+            if (gameState.openedBy.length > 0) {
+                recentOpens.style.display = 'block';
+                opensList.innerHTML = gameState.openedBy.slice(-5).reverse().map(entry => `
+                    <div class="open-item">
+                        <span>${entry.playerName || 'Ẩn danh'}</span>
+                        <span style="color: #fbbf24;">${formatMoney(entry.amount)}</span>
+                    </div>
+                `).join('');
+            } else {
+                recentOpens.style.display = 'none';
             }
         }
         
         function formatMoney(amount) {
             return amount.toLocaleString('vi-VN') + ' VNĐ';
+        }
+        
+        function showMessage(type, text) {
+            const messageEl = document.getElementById('joinMessage');
+            messageEl.className = type === 'error' ? 'error-message' : 'success-message';
+            messageEl.textContent = text;
+            
+            setTimeout(() => {
+                messageEl.textContent = '';
+                messageEl.className = '';
+            }, 3000);
         }
         
         function createConfetti() {
@@ -344,80 +713,17 @@
             }
         }
         
-        function openEnvelope() {
-            if (gameData.remainingEnvelopes <= 0) return;
-            
-            const envelope = document.getElementById('lixiEnvelope');
-            const amountDisplay = document.getElementById('amountDisplay');
-            const resultText = document.getElementById('resultText');
-            
-            envelope.classList.add('opened');
-            
-            // Calculate random amount ensuring fair distribution
-            const minAmount = 10000;
-            const maxAmount = Math.min(100000, gameData.remainingMoney);
-            
-            let randomAmount;
-            if (gameData.remainingEnvelopes === 1) {
-                // Last envelope gets all remaining money
-                randomAmount = gameData.remainingMoney;
-            } else {
-                // Ensure there's enough money left for remaining envelopes
-                const minForRemaining = (gameData.remainingEnvelopes - 1) * minAmount;
-                const availableForThis = gameData.remainingMoney - minForRemaining;
-                randomAmount = Math.min(maxAmount, Math.max(minAmount, Math.floor(Math.random() * availableForThis) + minAmount));
-            }
-            
-            setTimeout(() => {
-                amountDisplay.textContent = formatMoney(randomAmount);
-                resultText.innerHTML = `
-                    <div style="color: #fbbf24; font-weight: bold;">🎉 Chúc mừng! 🎉</div>
-                    <div>Bạn nhận được ${formatMoney(randomAmount)}</div>
-                `;
-                
-                gameData.remainingMoney -= randomAmount;
-                gameData.remainingEnvelopes--;
-                gameData.openedEnvelopes++;
-                
-                createConfetti();
-                saveGameData();
-                updateDisplay();
-                
-                envelope.classList.remove('opened');
-            }, 500);
-        }
-        
-        function resetGame() {
-            gameData = {
-                totalMoney: 500000,
-                remainingMoney: 500000,
-                remainingEnvelopes: 10,
-                openedEnvelopes: 0
-            };
-            
-            document.getElementById('amountDisplay').textContent = '';
-            document.getElementById('resultText').textContent = '';
-            document.getElementById('resetBtn').style.display = 'none';
-            
-            const envelope = document.getElementById('lixiEnvelope');
-            envelope.classList.remove('disabled');
-            envelope.innerHTML = `
-                <div class="envelope-flap"></div>
-                <div class="envelope-content">
-                    <div style="font-size: 40px;">🧧</div>
-                    <div class="envelope-text">Nhấn để mở</div>
-                </div>
-            `;
-            
-            saveGameData();
-            updateDisplay();
-        }
-        
         // Initialize
         document.getElementById('lixiEnvelope').addEventListener('click', openEnvelope);
-        updateDisplay();
         
-        // Add some sparkle effects
+        if (hasJoined && playerName) {
+            document.getElementById('playerName').value = playerName;
+            document.getElementById('playerSetup').style.display = 'none';
+        }
+        
+        initSocket();
+        
+        // Add sparkle effects
         setInterval(() => {
             if (Math.random() < 0.1) {
                 const sparkle = document.createElement('div');
